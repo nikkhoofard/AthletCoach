@@ -7,6 +7,8 @@ from django.utils.translation import gettext_lazy as _
 
 def validate_number(value):
     if 0 < value < 999:
+        return value
+    else:
         raise ValidationError(
             _('%(value)s is not an valid number'),
             params={'value': value},
@@ -15,6 +17,8 @@ def validate_number(value):
 
 def validate_set(value):
     if 0 < value < 50:
+        return value
+    else:
         raise ValidationError(
             _('%(value)s is not an valid number'),
             params={'value': value},
@@ -22,9 +26,12 @@ def validate_set(value):
 
 
 class Action(models.Model):
-    name = models.CharField(max_length=50, blank=False, null=False)
+    name = models.CharField(max_length=50, blank=False, null=True)
     time_created = models.DateTimeField(auto_now_add=True)
     time_updated = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.name}"
 
 
 class UserAction(models.Model):
@@ -35,3 +42,7 @@ class UserAction(models.Model):
     time_duration = models.DurationField()
     time_created = models.DateTimeField(auto_now_add=True)
     time_updated = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.action}--{self.user}"
+
