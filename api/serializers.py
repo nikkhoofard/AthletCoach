@@ -1,12 +1,23 @@
 from rest_framework import serializers
 from .models import UserAction, Action
 from django.contrib.auth import get_user_model
+from account.models import User
 
 
-class UserSerializer(serializers.ModelSerializer):
+class UserProfile(serializers.ModelSerializer):
     class Meta:
         model = get_user_model()
-        fields = "__all__"
+        fields = ('id', 'phone_number', 'first_name', 'last_name', 'password')
+        extra_kwargs = {'password': {'write_only': True}}
+
+    def create(self, validated_data):
+        user = User(
+            phone_number=validated_data['phone_number']
+        )
+        user.set_password(validated_data['password'])
+        user.save()
+
+        return user
 
 
 class UserActionSerializer(serializers.ModelSerializer):
